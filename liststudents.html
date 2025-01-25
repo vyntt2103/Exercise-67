@@ -1,0 +1,151 @@
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>List Students</title>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            td {
+                padding: 10px;
+                border: 1px solid black;
+                text-align: left;
+            }
+            th {
+                text-align: center;
+                background-color: #FFD966;
+                padding: 10px;
+                border: 1px solid black;
+                cursor: pointer; /* Added */
+            }
+            tr:hover {
+                background-color: #FFD966;
+            }
+        </style>
+        <script>
+            var dataset = "<students>";
+            dataset += "<student>";
+            dataset += "<id>987456</id>";
+            dataset += "<name> Marie Curie </name>";
+            dataset += "<birthday>7/11/1867</birthday>";
+            dataset += "<gender> Woman </gender>";
+            dataset += "</student>";
+            dataset += "<student>";
+            dataset += "<id>987561</id>";
+            dataset += "<name> Einstein </name>";
+            dataset += "<birthday>14/3/1879</birthday>";
+            dataset += "<gender>Man</gender>";
+            dataset += "</student>";
+            dataset += "<student>";
+            dataset += "<id>985467</id>";
+            dataset += "<name> Leó Szilárd </name>";
+            dataset += "<birthday>11/2/1898</birthday>";
+            dataset += "<gender> Man </gender>";
+            dataset += "</student>";
+            dataset += "</students>";
+
+            let studentsData = []; // Added: Array to store student data for sorting
+
+            function load_student() {
+                // Bước 1: Nạp mô hình XML DOM
+                var parser = new DOMParser();
+                var xmlDoc = parser.parseFromString(dataset, "text/xml");
+                var students = xmlDoc.getElementsByTagName("student");
+
+                for (let i = 0; i < students.length; i++) {
+                    let sti = students[i];
+                    let id = sti.getElementsByTagName("id")[0].childNodes[0].nodeValue.trim();
+                    let name = sti.getElementsByTagName("name")[0].childNodes[0].nodeValue.trim();
+                    let birthday = sti.getElementsByTagName("birthday")[0].childNodes[0].nodeValue.trim();
+                    let gender = sti.getElementsByTagName("gender")[0].childNodes[0].nodeValue.trim();
+
+                    // Added: Push to array for sorting
+                    studentsData.push({ id, name, birthday, gender });
+                }
+
+                renderTable(studentsData); // Initial render
+            }
+
+            // Function to render the table
+            function renderTable(data) {
+                const tbodystudent = document.getElementById("tbodystudent");
+                tbodystudent.innerHTML = ""; // Clear table before rendering
+
+                data.forEach((student) => {
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${student.birthday}</td>
+                        <td>${student.gender}</td>
+                    `;
+
+                    // Highlight row on hover
+                    tr.addEventListener("mouseover", () => {
+                        tr.style.backgroundColor = "yellow"; // Added
+                    });
+
+                    tr.addEventListener("mouseout", () => {
+                        tr.style.backgroundColor = ""; // Added
+                    });
+
+                    // Click event to open detail page
+                    tr.addEventListener("click", () => {
+                        let link = `detail.html?id=${student.id}&name=${student.name}&birthday=${student.birthday}&gender=${student.gender}`;
+                        window.open(link);
+                    });
+
+                    tbodystudent.appendChild(tr);
+                });
+            }
+
+            // Added: Function to sort table
+            function sortTable(column) {
+                studentsData.sort((a, b) => {
+                    let valA = a[column].toLowerCase();
+                    let valB = b[column].toLowerCase();
+
+                    if (valA < valB) return -1;
+                    if (valA > valB) return 1;
+                    return 0;
+                });
+
+                renderTable(studentsData);
+            }
+
+            // Added: Add event listeners to headers for sorting
+            document.addEventListener("DOMContentLoaded", () => {
+                const headers = document.querySelectorAll("th");
+                headers.forEach((header, index) => {
+                    if (index > 0) { // Skip the first row header
+                        header.addEventListener("click", () => {
+                            let column = ["id", "name", "birthday", "gender"][index - 1];
+                            sortTable(column);
+                        });
+                    }
+                });
+            });
+
+            load_student();
+        </script>
+    </head>
+<body>
+    <h1>Thông tin Sinh viên</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th colspan="4">List of Students</th>
+            </tr>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Birthday</th>
+                <th>Gender</th>
+            </tr>
+        </thead>
+        <tbody id="tbodystudent">
+        </tbody>
+    </table>
+</body>
+</html>

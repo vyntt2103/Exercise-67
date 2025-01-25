@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Details</title>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            td {
+                padding: 10px;
+                border: 1px solid black;
+                text-align: left;
+            }
+            th {
+                text-align: center;
+                background-color: #bfe5a2;
+                padding: 10px;
+                border: 1px solid black;
+            }
+            tr:hover {
+                background-color: blue;
+                color: white;
+            }
+        </style>
+    </head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th colspan="2">Student Information</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Student ID:</td>
+            <td id="tdid"></td>
+        </tr>
+        <tr>
+            <td>Student Name:</td>
+            <td id="tdname"></td>
+        </tr>
+        <tr>
+            <td>Birthday:</td>
+            <td id="tdbirthday"></td>
+        </tr>
+        <tr>
+            <td>Gender:</td>
+            <td id="tdgender"></td>
+        </tr>
+    </tbody>
+    </table>
+    <script>
+        queryString = window.location.search;
+        urlParams = new URLSearchParams(queryString)
+        id = urlParams.get('id')
+        name = urlParams.get('name')
+        birthday = urlParams.get('birthday')
+        gender = urlParams.get('gender')
+        document.getElementById("tdid").innerText=id
+        document.getElementById("tdname").innerText=name
+        document.getElementById("tdbirthday").innerText=birthday
+        document.getElementById("tdgender").innerText=gender
+    </script>
+</body>
+</html>
